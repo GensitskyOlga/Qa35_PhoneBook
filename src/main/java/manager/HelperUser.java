@@ -95,13 +95,39 @@ public class HelperUser extends HelperBase {
     }
 
     public void submitRegistration() {
-        WebElement registrationButton = wd.findElement(By.xpath("//button[normalize-space()='Registration']"));
-        registrationButton.click();
+        //WebElement registrationButton = wd.findElement(By.xpath("//button[normalize-space()='Registration']"));
+        //registrationButton.click();
+        click(By.xpath("//button[2]"));
     }
 
     public String getMessage() {
         WebDriverWait wait = new WebDriverWait(wd, Duration.ofSeconds(5));
         wait.until(ExpectedConditions.visibilityOf(wd.findElement(By.xpath(" //div[@class='contact-page_message__2qafk']"))));
         return wd.findElement(By.cssSelector("div[class='contact-page_message__2qafk'] h2")).getText();
+    }
+    public void click(By locator){
+        wd.findElement(locator).click();
+    }
+
+    public boolean isNoContactHereDisplayed() {
+        //return wd.findElement(By.cssSelector("div[class='contact-page_message__2qafk'] h1")).getText().contains("No Contacts here!");
+        return new WebDriverWait(wd, Duration.ofSeconds(5)).until(ExpectedConditions.textToBePresentInElement(wd.findElement(By.cssSelector("div[class='contact-page_message__2qafk'] h1")), "No Contacts here!"));
+
+    }
+
+    public boolean isAlertWithErrorPresent(String message) {
+       Alert alert= new WebDriverWait (wd,Duration.ofSeconds(5)).until(ExpectedConditions.alertIsPresent());
+       if (alert!=null && alert.getText().contains(message)){
+           alert.accept();
+           return true;
+       }
+       return false;
+    }
+
+    public void login(User user) {
+        openLoginRegistrationForm();
+        fillLoginRegistrationForm(user);
+        submitLogin();
+
     }
 }
